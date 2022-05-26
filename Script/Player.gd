@@ -14,6 +14,7 @@ var attack = false
 var multiattack = false
 var cont_attack = 0
 var timer_attack = 0
+var is_jump=false
 
 func test_anim(anim):
 	for i in range(0,anim.size()):
@@ -68,6 +69,18 @@ func hand_attack():
 		$AnimatedSprite.play("Punch3")
 		cont_attack=0
 
+func jump_fall():
+	if is_on_floor():
+		if Input.is_action_just_pressed("ui_up"):
+			motion.y = jump_heigth
+			is_jump=true
+			$AnimatedSprite.play("Jump")
+		while !is_on_floor(): #cambviar esto por una variable de salto
+			if motion.y < 0: $AnimatedSprite.play("Jump")
+			else: 
+				$AnimatedSprite.play("Fall")
+			
+
 func _ready():
 #TEST ANIMACIONES
 #	test_anim($AnimatedSprite.frames.get_animation_names())
@@ -80,9 +93,8 @@ func _physics_process(delta):
 	sacar_espada()
 	sword_attack()
 	hand_attack()
-	
-		
-	
+	jump_fall()
+
 
 	if Input.is_action_pressed("ui_right") && can_move == true:
 		motion.x = min (motion.x + acceleration, max_speed)
@@ -97,21 +109,13 @@ func _physics_process(delta):
 		else: $AnimatedSprite.play("Run_sword")
 
 	else:
-		if sword_is_out == false && can_move ==true: $AnimatedSprite.play("Idle")
-		elif sword_is_out == true && can_move==true: $AnimatedSprite.play("Idle_sword")
+		if sword_is_out == false && can_move ==true && is_jump==false: $AnimatedSprite.play("Idle")
+		elif sword_is_out == true && can_move==true && is_jump==false: $AnimatedSprite.play("Idle_sword")
 
 		friction = true
 		motion.x = lerp (motion.x, 0, 0.2)
 
-	if is_on_floor():
-
-
-		if Input.is_action_just_pressed("ui_up"):motion.y = jump_heigth
-
-	else:
-		if motion.y < 0: $AnimatedSprite.play("Jump")
-		else: 
-			$AnimatedSprite.play("Fall")
+	
 
 
 	motion = move_and_slide(motion,UP)
