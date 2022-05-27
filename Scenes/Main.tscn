@@ -11,7 +11,6 @@ extents = Vector2( 29.5, 281 )
 [node name="Main" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource( 1 )]
-jump_heigth = -941
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 
